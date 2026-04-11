@@ -9,9 +9,6 @@ from services.admin_service import (
 )
 from services.booking_service import create_booking
 from config import TABLES
-from database.db import init_db
-
-init_db()
 
 st.set_page_config(page_title="Admin Dashboard", layout="wide")
 

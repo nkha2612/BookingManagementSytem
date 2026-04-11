@@ -1,112 +1,100 @@
-from database.db import get_connection
+from gsheet_client import get_sheet
+from datetime import datetime
 
 
 class BookingModel:
 
     @staticmethod
+    def _get_next_id(sheet):
+        records = sheet.get_all_records()
+        if not records:
+            return 1
+        return max(r["id"] for r in records) + 1
+
+    @staticmethod
     def create_booking(name, phone, table_id, booking_time, note):
-        conn = get_connection()
-        cursor = conn.cursor()
+        sheet = get_sheet()
 
-        cursor.execute("""
-            INSERT INTO bookings (customer_name, phone, table_id, booking_datetime, note)
-            VALUES (?, ?, ?, ?, ?)
-        """, (name, phone, table_id, booking_time, note))
+        new_id = BookingModel._get_next_id(sheet)
 
-        conn.commit()
-        conn.close()
-
-    @staticmethod
-    def get_bookings_by_table_and_time(table_id, start, end):
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT * FROM bookings
-            WHERE table_id = ?
-            AND booking_datetime BETWEEN ? AND ?
-        """, (table_id, start, end))
-
-        result = cursor.fetchall()
-        conn.close()
-        return result
+        sheet.append_row([
+            new_id,
+            name,
+            phone,
+            table_id,
+            booking_time.strftime("%Y-%m-%d %H:%M:%S"),
+            note
+        ])
 
     @staticmethod
-    def count_booking_by_phone_and_date(phone, booking_date):
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT COUNT(*) FROM bookings
-            WHERE phone = ?
-            AND DATE(booking_datetime) = DATE(?)
-        """, (phone, booking_date))
-
-        count = cursor.fetchone()[0]
-        conn.close()
-        return count
+    def get_all():
+        sheet = get_sheet()
+        return sheet.get_all_records()
 
     @staticmethod
     def search(keyword):
-        conn = get_connection()
-        cursor = conn.cursor()
+        data = BookingModel.get_all()
 
-        cursor.execute("""
-            SELECT * FROM bookings
-            WHERE customer_name LIKE ?
-            OR phone LIKE ?
-        """, (f"%{keyword}%", f"%{keyword}%"))
+        return [
+            r for r in data
+            if keyword.lower() in r["customer_name"].lower()
+            or keyword in r["phone"]
+        ]
 
-        result = cursor.fetchall()
-        conn.close()
+    @staticmethod
+    def count_booking_by_phone_and_date(phone, booking_time):
+        data = BookingModel.get_all()
+
+        target_date = booking_time.strftime("%Y-%m-%d")
+
+        return sum(
+            1 for r in data
+            if r["phone"] == phone
+            and r["booking_datetime"].startswith(target_date)
+        )
+
+    @staticmethod
+    def get_bookings_by_table_and_time(table_id, start, end):
+        data = BookingModel.get_all()
+
+        result = []
+
+        for r in data:
+            if r["table_id"] != table_id:
+                continue
+
+            dt = datetime.strptime(
+                r["booking_datetime"], "%Y-%m-%d %H:%M:%S"
+            )
+
+            if start <= dt <= end:
+                result.append(r)
+
         return result
 
     @staticmethod
-    def create_booking(name, phone, table_id, booking_time, note):
-        conn = get_connection()
-        cursor = conn.cursor()
+    def delete_booking(id):
+        sheet = get_sheet()
+        records = sheet.get_all_records()
 
-        cursor.execute("""
-                INSERT INTO bookings (customer_name, phone, table_id, booking_datetime, note)
-                VALUES (?, ?, ?, ?, ?)
-            """, (name, phone, table_id, booking_time, note))
+        for idx, r in enumerate(records, start=2):
+            if r["id"] == id:
+                sheet.delete_rows(idx)
+                break
 
-        conn.commit()
-        conn.close()
-
-    # ===== READ =====
-    @staticmethod
-    def get_all():
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM bookings ORDER BY booking_datetime DESC")
-        data = cursor.fetchall()
-
-        conn.close()
-        return data
-
-    # ===== UPDATE =====
     @staticmethod
     def update_booking(id, name, phone, table_id, booking_time, note):
-        conn = get_connection()
-        cursor = conn.cursor()
+        sheet = get_sheet()
+        records = sheet.get_all_records()
 
-        cursor.execute("""
-                UPDATE bookings
-                SET customer_name=?, phone=?, table_id=?, booking_datetime=?, note=?
-                WHERE id=?
-            """, (name, phone, table_id, booking_time, note, id))
-
-        conn.commit()
-        conn.close()
-
-    # ===== DELETE =====
-    @staticmethod
-    def delete_booking(id):
-        conn = get_connection()
-        cursor = conn.cursor()
-
-        cursor.execute("DELETE FROM bookings WHERE id=?", (id,))
-        conn.commit()
-        conn.close()
+        for idx, r in enumerate(records, start=2):
+            if r["id"] == id:
+                sheet.update(f"A{idx}:F{idx}", [[
+                    id,
+                    name,
+                    phone,
+                    table_id,
+                    booking_time.strftime("%Y-%m-%d %H:%M:%S"),
+                    note
+                ]])
+                break

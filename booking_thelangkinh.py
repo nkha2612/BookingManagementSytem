@@ -2,10 +2,9 @@ import streamlit as st
 from datetime import datetime, date as dt_date
 from services.booking_service import create_booking
 from services.availability_service import is_table_available
-from database.db import init_db
+
 from config import TABLE_VIEW, TABLE_NO_VIEW, TABLE_PRIVATE
 
-init_db()
 
 st.set_page_config(page_title="Đặt bàn", layout="wide")
 
