@@ -99,11 +99,6 @@ with right:
     st.image("assets/restaurant.jpg", use_container_width=True)
 
 
-
-# ================= STATE =================
-if "selected_table" not in st.session_state:
-    st.session_state.selected_table = None
-
 # ================= TABLE UI =================
 st.subheader("🪑 Chọn bàn")
 
@@ -142,23 +137,6 @@ else:
 # ================= HIỂN THỊ =================
 if selected_table:
     st.success(f"✅ Bạn đã chọn: Bàn {selected_table}")
-
-# ================= SELECTED =================
-if st.session_state.selected_table:
-    st.markdown(f"""
-    <div style="
-        padding:12px;
-        background:#facc15;
-        color:black;
-        border-radius:10px;
-        font-weight:bold;
-        text-align:center;
-    ">
-        🪑 Bàn đang chọn: {st.session_state.selected_table}
-    </div>
-    """, unsafe_allow_html=True)
-else:
-    st.warning("⚠️ Chưa chọn bàn")
 
 # ================= SUBMIT =================
 if st.button("🚀 Xác nhận đặt bàn", use_container_width=True):
