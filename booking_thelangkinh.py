@@ -1,5 +1,7 @@
 import streamlit as st
 from datetime import datetime, date as dt_date
+
+from models.booking_model import BookingModel
 from services.booking_service import create_booking
 from services.availability_service import is_table_available
 
@@ -117,9 +119,12 @@ area_map = {
 selected_area_tables = area_map[area]
 
 # ================= LỌC BÀN TRỐNG =================
+# 🔥 load 1 lần
+all_bookings = BookingModel.get_all()
+
 available_tables = [
     table for table in selected_area_tables
-    if is_table_available(table, booking_time)
+    if is_table_available(table, booking_time, all_bookings)
 ]
 
 # ================= DROPDOWN CHỌN BÀN =================
