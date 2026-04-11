@@ -1,20 +1,12 @@
 import streamlit as st
-from data.data_loader import load_data
 from services.search_service import search_booking
+from database.db import init_db
 
-st.set_page_config(page_title="Booking Search", layout="wide")
+init_db()
+st.title(" Tìm kiếm Booking")
 
-st.title(" Booking Search (DEMO)")
+keyword = st.text_input("Nhập tên hoặc SĐT")
 
-# Load data
-df = load_data()
-
-# Input
-keyword = st.text_input("Nhập tên hoặc số điện thoại")
-
-# Search
-if st.button("Tìm kiếm"):
-    result = search_booking(df, keyword)
-
-    st.write(f"Kết quả: {len(result)} booking")
-    st.dataframe(result)
+if st.button("Tìm"):
+    df = search_booking(keyword)
+    st.dataframe(df)

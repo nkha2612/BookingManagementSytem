@@ -1,9 +1,11 @@
-def search_booking(df, keyword):
-    keyword = str(keyword).lower()
+import pandas as pd
+from models.booking_model import BookingModel
 
-    result = df[
-        df["customer_name"].str.lower().str.contains(keyword, na=False) |
-        df["phone"].astype(str).str.contains(keyword)
-    ]
 
-    return result
+def search_booking(keyword):
+    data = BookingModel.search(keyword)
+
+    columns = ["id", "customer_name", "phone", "table_id", "booking_datetime", "note"]
+    df = pd.DataFrame(data, columns=columns)
+
+    return df
