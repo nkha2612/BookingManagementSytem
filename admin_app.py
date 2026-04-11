@@ -16,16 +16,29 @@ st.title("🛠️ Admin - Quản lý Booking")
 
 # ================= LOAD DATA =================
 data = get_all_bookings()
-columns = ["id", "customer_name", "phone", "table_id", "booking_datetime", "note"]
-df = pd.DataFrame(data, columns=columns)
+
+if not data:
+    st.warning("⚠️ Chưa có dữ liệu")
+    df = pd.DataFrame(columns=[
+        "id", "customer_name", "phone", "table_id", "booking_datetime", "note"
+    ])
+else:
+    df = pd.DataFrame(data)
+
+# 🔥 ÉP KIỂU TRÁNH LỖI
+df["id"] = pd.to_numeric(df.get("id", 0), errors="coerce")
+df["phone"] = df.get("phone", "").astype(str)
+df["customer_name"] = df.get("customer_name", "").astype(str)
 
 # ================= SEARCH =================
-keyword = st.text_input("🔍 Tìm theo tên hoặc SĐT")
+st.subheader("🔍 Tìm kiếm")
+
+keyword = st.text_input("Nhập tên hoặc SĐT")
 
 if keyword:
     df = df[
-        df["customer_name"].str.contains(keyword, case=False) |
-        df["phone"].str.contains(keyword)
+        df["customer_name"].str.contains(keyword, case=False, na=False) |
+        df["phone"].str.contains(keyword, na=False)
     ]
 
 st.dataframe(df, use_container_width=True)
@@ -43,6 +56,7 @@ with st.expander("Tạo booking mới"):
 
     if st.button("Tạo"):
         success, msg = create_booking(name, phone, table_id, booking_time, note)
+
         if success:
             st.success(msg)
             st.rerun()
@@ -62,19 +76,26 @@ if selected_id:
 
         name = st.text_input("Tên", value=row["customer_name"], key="edit_name")
         phone = st.text_input("SĐT", value=row["phone"], key="edit_phone")
-        table_id = st.selectbox("Bàn", TABLES, index=TABLES.index(row["table_id"]))
+
+        table_id = st.selectbox(
+            "Bàn",
+            TABLES,
+            index=TABLES.index(int(row["table_id"])) if str(row["table_id"]).isdigit() else 0
+        )
+
         booking_time = st.datetime_input(
             "Thời gian",
-            value=pd.to_datetime(row["booking_datetime"])
+            value=pd.to_datetime(row["booking_datetime"], errors="coerce") or datetime.now()
         )
-        note = st.text_input("Ghi chú", value=row["note"])
+
+        note = st.text_input("Ghi chú", value=row.get("note", ""))
 
         if st.button("Cập nhật"):
             update_booking(selected_id, name, phone, table_id, booking_time, note)
-            st.success("Cập nhật thành công")
+            st.success("✅ Cập nhật thành công")
             st.rerun()
     else:
-        st.warning("Không tìm thấy ID")
+        st.warning("❌ Không tìm thấy ID")
 
 # ================= DELETE =================
 st.subheader("❌ Xoá booking")
@@ -83,5 +104,5 @@ delete_id = st.number_input("Nhập ID cần xoá", step=1, key="delete_id")
 
 if st.button("Xoá"):
     delete_booking(delete_id)
-    st.success("Đã xoá")
+    st.success("✅ Đã xoá")
     st.rerun()

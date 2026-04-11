@@ -45,10 +45,12 @@ class BookingModel:
     def search(keyword):
         data = BookingModel.get_all()
 
+        keyword = str(keyword).lower()
+
         return [
             r for r in data
-            if keyword.lower() in r["customer_name"].lower()
-            or keyword in r["phone"]
+            if keyword in str(r.get("customer_name", "")).lower()
+               or keyword in str(r.get("phone", ""))
         ]
 
     @staticmethod
