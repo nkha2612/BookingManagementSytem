@@ -136,13 +136,13 @@ else:
 
 # ================= HIỂN THỊ =================
 if selected_table:
-    st.success(f"✅ Bạn đã chọn: Bàn {selected_table}")
+    st.success(f"Bạn đã chọn: Bàn {selected_table}")
 
 # ================= SUBMIT =================
-if st.button("🚀 Xác nhận đặt bàn", use_container_width=True):
+if st.button("Xác nhận đặt bàn", use_container_width=True):
 
-    if not st.session_state.selected_table:
-        st.error("❌ Vui lòng chọn bàn")
+    if not selected_table:
+        st.error("Vui lòng chọn bàn")
 
     else:
         success, msg = create_booking(
@@ -154,7 +154,6 @@ if st.button("🚀 Xác nhận đặt bàn", use_container_width=True):
         )
 
         if success:
-            st.success(f"🎉 {msg} | {formatted_date} - {formatted_time}")
-            st.session_state.selected_table = None
+            st.success(f"{msg} | {formatted_date} - {formatted_time}")
         else:
             st.error(msg)
