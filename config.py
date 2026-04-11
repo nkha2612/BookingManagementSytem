@@ -1,0 +1,1 @@
+GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1NcHu1Ec8C_2XDnjQo_ECb_-r3NtxEm1J9OpDee4MzUs/export?format=csv"
