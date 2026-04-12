@@ -50,7 +50,7 @@ button:disabled {
 # ================= HEADER =================
 st.markdown("""
 <h2 style='text-align:center;'>
-🍽️ Đặt bàn - <span style='color:#60a5fa'>The Lăng Kính</span>
+  Đặt bàn - <span style='color:#60a5fa'>The Lăng Kính</span>
 </h2>
 """, unsafe_allow_html=True)
 
@@ -60,11 +60,11 @@ left, right = st.columns([2,1])
 # ================= FORM =================
 with left:
 
-    name = st.text_input("👤 Tên khách")
-    phone = st.text_input("📞 SĐT")
+    name = st.text_input(" Tên khách")
+    phone = st.text_input(" SĐT")
 
     date = st.date_input(
-        "📅 Ngày",
+        " Ngày",
         min_value=dt_date.today(),
         format="DD/MM/YYYY"
     )
@@ -79,7 +79,7 @@ with left:
                 slots.append(f"{h:02d}:{m:02d}")
         return slots
 
-    time_str = st.selectbox("⏰ Giờ", generate_time_slots())
+    time_str = st.selectbox("Giờ", generate_time_slots())
 
     hour, minute = map(int, time_str.split(":"))
 
@@ -91,9 +91,9 @@ with left:
     formatted_date = date.strftime("%d/%m/%Y")
     formatted_time = f"{hour:02d}:{minute:02d}"
 
-    st.info(f"📅 {formatted_date} | ⏰ {formatted_time}")
+    st.info(f" {formatted_date} |  {formatted_time}")
 
-    note = st.text_input("📝 Yêu cầu")
+    note = st.text_input(" Yêu cầu")
 
 # ================= ẢNH =================
 with right:
@@ -101,19 +101,19 @@ with right:
 
 
 # ================= TABLE UI =================
-st.subheader("🪑 Chọn bàn")
+st.subheader(" Chọn bàn")
 
 # ================= CHỌN KHU VỰC =================
 area = st.selectbox(
-    "📍 Chọn khu vực",
-    ["🪟 View kính", "🪑 Không view", "🔒 Riêng tư"]
+    " Chọn khu vực",
+    [" View kính", " Không view", " Riêng tư"]
 )
 
 # Mapping
 area_map = {
-    "🪟 View kính": TABLE_VIEW,
-    "🪑 Không view": TABLE_NO_VIEW,
-    "🔒 Riêng tư": TABLE_PRIVATE
+    " View kính": TABLE_VIEW,
+    " Không view": TABLE_NO_VIEW,
+    " Riêng tư": TABLE_PRIVATE
 }
 
 selected_area_tables = area_map[area]
@@ -130,13 +130,13 @@ available_tables = [
 # ================= DROPDOWN CHỌN BÀN =================
 if available_tables:
     selected_table = st.selectbox(
-        "🪑 Chọn bàn",
+        " Chọn bàn",
         available_tables,
         format_func=lambda x: f"Bàn {x}"
     )
 else:
     selected_table = None
-    st.warning("⚠️ Không còn bàn trống trong khu vực này")
+    st.warning(" Không còn bàn trống trong khu vực này")
 
 # ================= HIỂN THỊ =================
 if selected_table:
