@@ -8,7 +8,7 @@ from services.availability_service import is_table_available
 from config import TABLE_VIEW, TABLE_NO_VIEW, TABLE_PRIVATE
 
 
-st.set_page_config(page_title="Đặt bàn", layout="wide")
+st.set_page_config(page_title="Đặt bàn", page_icon="assets/page_logo.jpg" , layout="wide")
 
 # ================= CSS =================
 st.markdown("""
@@ -100,9 +100,6 @@ with right:
     st.image("assets/restaurant.jpg", use_container_width=True)
 
 
-# ================= TABLE UI =================
-st.subheader(" Chọn bàn")
-
 # ================= CHỌN KHU VỰC =================
 area = st.selectbox(
     " Chọn khu vực",
@@ -137,10 +134,6 @@ if available_tables:
 else:
     selected_table = None
     st.warning(" Không còn bàn trống trong khu vực này")
-
-# ================= HIỂN THỊ =================
-if selected_table:
-    st.success(f"Bạn đã chọn: Bàn {selected_table}")
 
 # ================= SUBMIT =================
 if st.button("Xác nhận đặt bàn", use_container_width=True):
