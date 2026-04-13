@@ -20,7 +20,7 @@ class BookingModel:
         return max(int(r["id"]) for r in records) + 1
 
     @staticmethod
-    def create_booking(name, phone, table_id, booking_time, note):
+    def create_booking(name, phone, table_id, booking_time, note, combo, dish, table_note):
         sheet = get_sheet()
 
         new_id = BookingModel._get_next_id(sheet)
@@ -31,10 +31,12 @@ class BookingModel:
             phone,
             table_id,
             booking_time.strftime("%Y-%m-%d %H:%M:%S"),
-            note
+            note,
+            combo,
+            dish,
+            table_note
         ])
 
-        # 🔥 clear cache sau khi thêm
         _get_all_cached.clear()
 
     @staticmethod
@@ -102,19 +104,22 @@ class BookingModel:
         _get_all_cached.clear()
 
     @staticmethod
-    def update_booking(id, name, phone, table_id, booking_time, note):
+    def update_booking(id, name, phone, table_id, booking_time, note, combo, dish, table_note):
         sheet = get_sheet()
         records = sheet.get_all_records()
 
         for idx, r in enumerate(records, start=2):
             if int(r["id"]) == id:
-                sheet.update(f"A{idx}:F{idx}", [[
+                sheet.update(f"A{idx}:I{idx}", [[
                     id,
                     name,
                     phone,
                     table_id,
                     booking_time.strftime("%Y-%m-%d %H:%M:%S"),
-                    note
+                    note,
+                    combo,
+                    dish,
+                    table_note
                 ]])
                 break
 

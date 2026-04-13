@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from services.search_service import search_booking
 
-st.set_page_config(page_title="Tìm kiếm Booking", layout="centered")
+st.set_page_config(page_title="Tìm kiếm Booking", page_icon="assets/page_logo.jpg", layout="centered")
 
 st.title("Tìm kiếm Booking")
 

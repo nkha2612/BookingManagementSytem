@@ -9,7 +9,7 @@ def search_booking(keyword):
     if not data:
         return pd.DataFrame(columns=[
             "id", "customer_name", "phone",
-            "table_id", "booking_datetime", "note"
+            "table_id", "booking_datetime", "note", "combo", "dish", "table_note"
         ])
 
     df = pd.DataFrame(data)
@@ -17,7 +17,7 @@ def search_booking(keyword):
     # ===== đảm bảo đủ cột =====
     expected_cols = [
         "id", "customer_name", "phone",
-        "table_id", "booking_datetime", "note"
+        "table_id", "booking_datetime", "note", "combo", "dish", "table_note"
     ]
 
     for col in expected_cols:

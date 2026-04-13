@@ -3,7 +3,7 @@ from services.availability_service import is_table_available
 from services.validation_service import validate_booking
 
 
-def create_booking(name, phone, table_id, booking_time, note):
+def create_booking(name, phone, table_id, booking_time, note, combo, dish, table_note):
 
     # ✅ Validate
     is_valid, msg = validate_booking(name, phone, booking_time)
@@ -19,7 +19,7 @@ def create_booking(name, phone, table_id, booking_time, note):
 
     # ✅ Lưu booking
     BookingModel.create_booking(
-        name, phone, table_id, booking_time, note
+        name, phone, table_id, booking_time, note, combo, dish, table_note
     )
 
     # 🔥 Clear cache đúng chỗ

@@ -6,5 +6,7 @@ def get_all_bookings():
 def delete_booking(id):
     BookingModel.delete_booking(id)
 
-def update_booking(id, name, phone, table_id, booking_time, note):
-    BookingModel.update_booking(id, name, phone, table_id, booking_time, note)
+def update_booking(id, name, phone, table_id, booking_time, note, combo, dish, table_note):
+    BookingModel.update_booking(
+        id, name, phone, table_id, booking_time, note, combo, dish, table_note
+    )
